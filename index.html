@@ -1210,29 +1210,26 @@ ${renderBehaviorGroups(area)}
       if (e.target.files[0]) { importData(e.target.files[0]); e.target.value = ''; }
     });
 
-    // On load: check for existing session first
-    (async function init() {
-      try {
-        const { data: { session } } = await db.auth.getSession();
-        if (session) {
-          document.getElementById('auth-overlay').classList.add('hidden');
-          await loadAndRender();
-        }
-        // else: auth overlay stays visible, user must sign in
-      } catch(e) {
-        showAppError('Auth error: ' + (e.message || e));
-      }
-    })();
-
-    // Handle fresh sign-ins
+    // On load: use onAuthStateChange as primary trigger (handles both fresh login and session restore)
     db.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
+      if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN') && session) {
         document.getElementById('auth-overlay').classList.add('hidden');
         await loadAndRender();
+      } else if (event === 'INITIAL_SESSION' && !session) {
+        // No stored session — show login screen (already visible by default)
       } else if (event === 'SIGNED_OUT') {
+        appReady = false;
         document.getElementById('auth-overlay').classList.remove('hidden');
       }
     });
+
+    // Fallback: if onAuthStateChange never fires within 6s, show login screen
+    setTimeout(function() {
+      if (!appReady) {
+        document.getElementById('auth-overlay').classList.remove('hidden');
+        document.getElementById('save-time').textContent = 'Session timed out — please sign in';
+      }
+    }, 6000);
   </script>
 </body>
 </html>
