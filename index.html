@@ -549,10 +549,9 @@
           <span class="save-dot"></span>
           <span id="save-time">Loading…</span>
         </div>
-<button class="btn-ghost" id="export-btn">↑ Export</button>
-        <button class="btn-ghost" id="import-btn">↓ Import</button>
+<button class="btn-ghost" id="save-btn">Save</button>
+        <button class="btn-ghost" id="export-btn">↑ Export</button>
         <button class="btn-ghost" id="logout-btn">Sign out</button>
-        <input type="file" id="import-input" accept=".json">
       </div>
     </div>
 
@@ -1203,12 +1202,16 @@ ${renderBehaviorGroups(area)}
       if (e.key === 'Enter') signIn();
     });
     document.getElementById('logout-btn').addEventListener('click', signOut);
+    document.getElementById('save-btn').addEventListener('click', async function() {
+      const btn = this;
+      btn.textContent = 'Saving…'; btn.disabled = true;
+      state.lastSaved = new Date().toISOString();
+      const { error } = await db.from('tracker_state').upsert({ id: 'main', data: state, updated_at: new Date().toISOString() });
+      if (error) { showToast('Save failed'); } else { showToast('Saved'); updateSaveStatus(); }
+      btn.textContent = 'Save'; btn.disabled = false;
+    });
     document.getElementById('export-btn').addEventListener('click', exportData);
     document.getElementById('export-btn-2').addEventListener('click', exportData);
-    document.getElementById('import-btn').addEventListener('click', function() { document.getElementById('import-input').click(); });
-    document.getElementById('import-input').addEventListener('change', function(e) {
-      if (e.target.files[0]) { importData(e.target.files[0]); e.target.value = ''; }
-    });
 
     // On load: use onAuthStateChange as primary trigger (handles both fresh login and session restore)
     db.auth.onAuthStateChange(async (event, session) => {
