@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dimitar – Growth Plan H1 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ── Corti Design Tokens ─────────────────────────── */
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 0 0% 6%;
+      --card: 0 0% 100%;
+      --card-foreground: 0 0% 6%;
+      --primary: 0 0% 6%;
+      --primary-foreground: 0 0% 100%;
+      --secondary: 0 0% 100%;
+      --secondary-foreground: 0 0% 6%;
+      --accent: 0 0% 98%;
+      --accent-foreground: 222 47% 11%;
+      --muted: 0 0% 98%;
+      --muted-foreground: 0 0% 41%;
+      --destructive: 0 84% 60%;
+      --destructive-foreground: 0 0% 100%;
+      --border: 0 0% 93%;
+      --input: 0 0% 90%;
+      --ring: 215 16% 47%;
+      --radius: 0.5rem;
+      --variant-error-bg: 0 100% 97%;
+      --variant-error-border: 0 93% 86%;
+      --variant-error-text: 0 72% 37%;
+      --variant-success-bg: 142 76% 97%;
+      --variant-success-border: 142 61% 86%;
+      --variant-success-text: 142 70% 28%;
+      --variant-warning-bg: 38 100% 96%;
+      --variant-warning-border: 38 94% 84%;
+      --variant-warning-text: 30 92% 34%;
+      --chart-1: 265 65% 46%;
+      --chart-2: 204 86% 49%;
+      --corti-lime: 77 94% 53%;
+      --corti-lime-foreground: 0 0% 6%;
+    }
+
+    .dark {
+      --background: 0 0% 6%;
+      --foreground: 0 0% 90%;
+      --card: 0 0% 10%;
+      --card-foreground: 0 0% 90%;
+      --primary: 0 0% 100%;
+      --primary-foreground: 0 0% 6%;
+      --secondary: 0 0% 16%;
+      --secondary-foreground: 0 0% 90%;
+      --accent: 0 0% 16%;
+      --accent-foreground: 0 0% 90%;
+      --muted: 0 0% 16%;
+      --muted-foreground: 0 0% 65%;
+      --destructive: 0 72% 50%;
+      --destructive-foreground: 0 0% 100%;
+      --border: 0 0% 25%;
+      --input: 0 0% 25%;
+      --ring: 0 0% 100%;
+      --variant-error-bg: 0 60% 9%;
+      --variant-error-border: 0 52% 28%;
+      --variant-error-text: 0 68% 82%;
+      --variant-success-bg: 150 40% 8%;
+      --variant-success-border: 150 35% 28%;
+      --variant-success-text: 140 36% 80%;
+      --variant-warning-bg: 60 100% 6%;
+      --variant-warning-border: 60 100% 18%;
+      --variant-warning-text: 48 96% 78%;
+      --chart-1: 264 97% 62%;
+      --chart-2: 203 100% 60%;
+      --corti-lime: 77 94% 53%;
+      --corti-lime-foreground: 0 0% 6%;
+    }
+
+    /* ── Base ────────────────────────────────────────── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
+
+    /* ── Header ──────────────────────────────────────── */
+    .header {
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+      padding: 28px 48px 32px;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 28px;
+    }
+    .header-left h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .header-left .meta {
+      font-size: 12px;
+      opacity: 0.5;
+      margin-top: 4px;
+    }
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+    .save-status {
+      font-size: 11px;
+      opacity: 0.5;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-right: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .save-dot { width: 5px; height: 5px; border-radius: 50%; background: hsl(var(--corti-lime)); }
+    .btn-ghost {
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      background: transparent;
+      color: hsl(var(--primary-foreground));
+      transition: border-color 0.12s, opacity 0.12s;
+      opacity: 0.7;
+    }
+    .btn-ghost:hover { opacity: 1; border-color: rgba(255,255,255,0.4); }
+
+    /* Timeline */
+    .timeline-section { margin-bottom: 16px; }
+    .timeline-labels {
+      position: relative;
+      height: 14px;
+      font-size: 10px;
+      opacity: 0.4;
+      margin-bottom: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .timeline-labels span {
+      position: absolute;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .timeline-labels span:first-child { transform: none; }
+    .timeline-labels span:last-child  { transform: translateX(-100%); }
+    .timeline-bar {
+      position: relative;
+      height: 6px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 3px;
+      margin-bottom: 22px;
+    }
+    .timeline-fill {
+      position: absolute;
+      left: 0; top: 0; height: 100%;
+      background: hsl(var(--corti-lime));
+      border-radius: 3px;
+    }
+    .timeline-today {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px; height: 12px;
+      background: hsl(var(--corti-lime));
+      border-radius: 50%;
+      border: 2px solid hsl(var(--primary));
+      z-index: 3;
+    }
+    .t-pin {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      z-index: 2;
+    }
+    .t-pin.passed { background: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.4); }
+    .t-pin.review-pin { background: hsl(var(--corti-lime)); border-color: hsl(var(--corti-lime)); opacity: 0.7; }
+    .t-pin-lbl {
+      position: absolute;
+      top: 12px;
+      transform: translateX(-50%);
+      font-size: 9px;
+      font-family: 'IBM Plex Mono', monospace;
+      opacity: 0.65;
+      white-space: nowrap;
+    }
+
+    /* Plan stats — compact single line */
+    .plan-stats {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      font-size: 11px;
+      opacity: 0.5;
+    }
+    .plan-stats .stat-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 500;
+    }
+    .plan-stats .sep { opacity: 0.4; }
+
+    /* ── Main ────────────────────────────────────────── */
+    .main { padding: 20px 48px 48px; display: flex; flex-direction: column; gap: 8px; }
+
+    /* ── Card ────────────────────────────────────────── */
+    .card {
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      color: hsl(var(--card-foreground));
+      overflow: hidden;
+    }
+    .card-hd {
+      display: flex; align-items: center; gap: 12px;
+      padding: 15px 18px; cursor: pointer; user-select: none;
+      transition: background 0.1s;
+    }
+    .card-hd:hover { background: hsl(var(--muted)); }
+    .area-badge {
+      width: 28px; height: 28px;
+      border-radius: var(--radius);
+      background: hsl(var(--muted));
+      color: hsl(var(--muted-foreground));
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .card-title-col { flex: 1; min-width: 0; }
+    .card-title { font-size: 13px; font-weight: 600; }
+    .card-goal-text { font-size: 12px; color: hsl(var(--muted-foreground)); margin-top: 1px; line-height: 1.4; }
+    .card-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .r-badge { display: flex; gap: 3px; align-items: center; }
+    .rb { width: 6px; height: 6px; border-radius: 50%; background: hsl(var(--border)); }
+    .rb.on { background: hsl(var(--foreground)); }
+    .ms-chips { display: flex; gap: 3px; }
+    .ms-chip {
+      font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 99px;
+      background: hsl(var(--muted)); color: hsl(var(--muted-foreground));
+      text-transform: uppercase; letter-spacing: 0.04em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .ms-chip.done {
+      background: hsl(var(--variant-success-bg));
+      color: hsl(var(--variant-success-text));
+      border: 1px solid hsl(var(--variant-success-border));
+    }
+    .ms-chip.overdue {
+      background: hsl(var(--variant-warning-bg));
+      color: hsl(var(--variant-warning-text));
+      border: 1px solid hsl(var(--variant-warning-border));
+    }
+    .chevron {
+      color: hsl(var(--muted-foreground));
+      font-size: 16px; transition: transform 0.2s; flex-shrink: 0; line-height: 1;
+    }
+    .card.open .chevron { transform: rotate(180deg); }
+
+    .card-bd { display: none; padding: 0 18px 18px; }
+    .card.open .card-bd { display: block; }
+    .divider { height: 1px; background: hsl(var(--border)); margin-bottom: 16px; }
+
+    .sl {
+      font-size: 10px; font-weight: 600; color: hsl(var(--muted-foreground));
+      text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 8px; margin-top: 16px;
+    }
+
+    /* ── Rating ──────────────────────────────────────── */
+    .r-q { font-size: 12px; color: hsl(var(--muted-foreground)); margin-bottom: 10px; line-height: 1.5; }
+    .r-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+    .r-opt {
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      padding: 8px 4px; text-align: center; cursor: pointer; transition: all 0.1s;
+    }
+    .r-opt:hover { border-color: hsl(var(--foreground)); background: hsl(var(--muted)); }
+    .r-opt.sel {
+      background: hsl(var(--corti-lime));
+      border-color: hsl(var(--corti-lime));
+    }
+    .r-num {
+      font-size: 17px; font-weight: 700; color: hsl(var(--foreground)); line-height: 1;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .r-opt.sel .r-num { color: hsl(var(--corti-lime-foreground)); }
+    .r-lbl { font-size: 9px; color: hsl(var(--muted-foreground)); margin-top: 4px; line-height: 1.3; }
+    .r-opt.sel .r-lbl { color: hsl(var(--corti-lime-foreground)); opacity: 0.7; }
+
+    /* ── Behaviors ───────────────────────────────────── */
+    .bv-group { display: flex; flex-direction: column; gap: 4px; }
+    .bv-item {
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.12s;
+    }
+    .bv-item.checked {
+      border-color: hsl(var(--variant-success-border));
+    }
+    .bv-row {
+      display: flex; align-items: flex-start; gap: 9px;
+      padding: 9px 11px; cursor: pointer; transition: background 0.1s;
+    }
+    .bv-item:not(.checked) .bv-row:hover { background: hsl(var(--muted)); }
+    .bv-item.checked .bv-row { background: hsl(var(--variant-success-bg)); }
+    .bv-chk {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 1.5px solid hsl(var(--border));
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px; font-size: 9px;
+      color: transparent; transition: all 0.12s;
+    }
+    .bv-item.checked .bv-chk {
+      background: hsl(var(--variant-success-text));
+      border-color: hsl(var(--variant-success-text));
+      color: hsl(var(--background));
+    }
+    .bv-label {
+      font-size: 12px; line-height: 1.5; flex: 1;
+      color: hsl(var(--foreground));
+    }
+    .bv-item.checked .bv-label { color: hsl(var(--muted-foreground)); }
+
+    /* Evidence within behavior */
+    .bv-body { padding: 0 11px 9px 36px; }
+    .bv-entries { display: flex; flex-direction: column; gap: 4px; margin-bottom: 5px; }
+    .bv-ev {
+      display: flex; gap: 8px; align-items: flex-start;
+      padding: 6px 9px; background: hsl(var(--background));
+      border: 1px solid hsl(var(--border)); border-radius: var(--radius);
+    }
+    .bv-ev-date {
+      font-size: 10px; color: hsl(var(--muted-foreground));
+      white-space: nowrap; padding-top: 2px; min-width: 54px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .bv-ev-text {
+      flex: 1; font-size: 12px; line-height: 1.5;
+      border: none; background: transparent; outline: none;
+      resize: none; overflow: hidden; font-family: 'Inter', sans-serif;
+      color: hsl(var(--foreground)); min-height: 18px;
+    }
+    .bv-ev-del {
+      opacity: 0; background: none; border: none; cursor: pointer;
+      color: hsl(var(--muted-foreground)); font-size: 14px; padding: 0;
+      line-height: 1; transition: all 0.1s; flex-shrink: 0;
+    }
+    .bv-ev:hover .bv-ev-del { opacity: 1; }
+    .bv-ev-del:hover { color: hsl(var(--destructive)); }
+    .bv-add {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border: 1px dashed hsl(var(--border));
+      border-radius: var(--radius); background: none; cursor: pointer;
+      font-size: 11px; color: hsl(var(--muted-foreground)); font-family: 'Inter', sans-serif;
+      transition: all 0.1s;
+    }
+    .bv-add:hover { border-color: hsl(var(--foreground)); color: hsl(var(--foreground)); }
+
+    /* ── Milestones ──────────────────────────────────── */
+    .ms-list { display: flex; flex-direction: column; gap: 5px; }
+    .ms-item {
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius); transition: all 0.1s; overflow: hidden;
+    }
+    .ms-item:hover { border-color: hsl(var(--variant-success-border)); }
+    .ms-item.done {
+      border-color: hsl(var(--variant-success-border));
+      background: hsl(var(--variant-success-bg));
+    }
+    .ms-item.overdue:not(.done) {
+      border-color: hsl(var(--variant-warning-border));
+      background: hsl(var(--variant-warning-bg));
+    }
+    .ms-row {
+      display: flex; align-items: flex-start; gap: 9px;
+      padding: 10px 12px; cursor: pointer;
+    }
+    .ms-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 1.5px solid hsl(var(--border));
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px; font-size: 10px;
+      transition: all 0.12s; color: transparent;
+    }
+    .ms-item.done .ms-check {
+      background: hsl(var(--variant-success-text));
+      border-color: hsl(var(--variant-success-text));
+      color: hsl(var(--background));
+    }
+    .ms-period {
+      font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 99px;
+      background: hsl(var(--muted)); color: hsl(var(--muted-foreground));
+      flex-shrink: 0; margin-top: 2px; white-space: nowrap;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .ms-item.overdue:not(.done) .ms-period {
+      background: hsl(var(--variant-warning-bg));
+      color: hsl(var(--variant-warning-text));
+    }
+    .ms-item.done .ms-period {
+      background: hsl(var(--variant-success-bg));
+      color: hsl(var(--variant-success-text));
+    }
+    .ms-text { font-size: 12px; line-height: 1.5; }
+    .ms-item.done .ms-text { color: hsl(var(--muted-foreground)); }
+
+    /* milestone rating */
+    .ms-rating { display: flex; gap: 4px; padding: 0 12px 10px 39px; }
+    .ms-r-opt {
+      flex: 1; border: 1px solid hsl(var(--border)); border-radius: var(--radius);
+      padding: 5px 3px; text-align: center; cursor: pointer; transition: all 0.1s;
+    }
+    .ms-r-opt:hover { border-color: hsl(var(--foreground)); background: hsl(var(--muted)); }
+    .ms-r-opt.sel { background: hsl(var(--corti-lime)); border-color: hsl(var(--corti-lime)); }
+    .ms-r-num {
+      font-size: 13px; font-weight: 700; color: hsl(var(--foreground)); line-height: 1;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .ms-r-opt.sel .ms-r-num { color: hsl(var(--corti-lime-foreground)); }
+    .ms-r-lbl { font-size: 8px; color: hsl(var(--muted-foreground)); margin-top: 3px; line-height: 1.3; }
+    .ms-r-opt.sel .ms-r-lbl { color: hsl(var(--corti-lime-foreground)); opacity: 0.7; }
+
+    /* ── Notes ───────────────────────────────────────── */
+    .notes-ta {
+      width: 100%; padding: 9px 11px;
+      border: 1px solid hsl(var(--border)); border-radius: var(--radius);
+      font-size: 12px; font-family: 'Inter', sans-serif;
+      resize: vertical; min-height: 68px; outline: none;
+      transition: border-color 0.1s;
+      color: hsl(var(--foreground)); background: hsl(var(--background)); line-height: 1.5;
+    }
+    .notes-ta:focus { border-color: hsl(var(--ring)); }
+    .notes-ta::placeholder { color: hsl(var(--muted-foreground)); opacity: 0.6; }
+
+    /* ── Footer ──────────────────────────────────────── */
+    .footer { padding: 0 48px 36px; display: flex; justify-content: flex-end; }
+    .btn-secondary {
+      padding: 7px 14px; border-radius: var(--radius);
+      border: 1px solid hsl(var(--border));
+      background: transparent; color: hsl(var(--foreground));
+      font-size: 12px; font-weight: 500;
+      cursor: pointer; font-family: 'Inter', sans-serif; transition: border-color 0.1s;
+    }
+    .btn-secondary:hover { border-color: hsl(var(--foreground)); }
+
+    #import-input { display: none; }
+
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: hsl(var(--primary)); color: hsl(var(--primary-foreground));
+      padding: 9px 14px; border-radius: var(--radius); font-size: 12px;
+      opacity: 0; transform: translateY(6px); transition: all 0.18s;
+      pointer-events: none; z-index: 100;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 860px) {
+      .header { padding: 20px; }
+      .main { padding: 14px 20px 32px; }
+      .footer { padding: 0 20px 24px; }
+      .header-row { flex-direction: column; gap: 12px; }
+      .card-right { display: none; }
+    }
+
+    /* ── Auth overlay ────────────────────────────────── */
+    .auth-overlay {
+      position: fixed; inset: 0;
+      background: hsl(var(--background));
+      display: flex; align-items: center; justify-content: center;
+      z-index: 500;
+    }
+    .auth-overlay.hidden { display: none; }
+    .auth-card {
+      width: 340px;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      padding: 32px 28px;
+    }
+    .auth-logo { font-size: 13px; font-weight: 700; opacity: 0.35; margin-bottom: 24px; }
+    .auth-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .auth-sub { font-size: 12px; color: hsl(var(--muted-foreground)); margin-bottom: 24px; line-height: 1.5; }
+    .auth-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+    .auth-label { font-size: 11px; font-weight: 600; color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em; }
+    .auth-input {
+      padding: 9px 11px; border: 1px solid hsl(var(--border));
+      border-radius: var(--radius); font-size: 13px; outline: none;
+      background: hsl(var(--background)); color: hsl(var(--foreground));
+      font-family: 'Inter', sans-serif; transition: border-color 0.1s;
+    }
+    .auth-input:focus { border-color: hsl(var(--ring)); }
+    .auth-btn {
+      width: 100%; padding: 10px;
+      background: hsl(var(--primary)); color: hsl(var(--primary-foreground));
+      border: none; border-radius: var(--radius);
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif; margin-top: 8px; transition: opacity 0.1s;
+    }
+    .auth-btn:hover { opacity: 0.85; }
+    .auth-btn:disabled { opacity: 0.4; cursor: default; }
+    .auth-error {
+      font-size: 12px; color: hsl(var(--destructive));
+      margin-top: 10px; min-height: 16px; line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Auth overlay -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-logo">Corti</div>
+      <div class="auth-title">Growth Plan H1 2026</div>
+      <div class="auth-sub">Sign in to view and update the tracker.</div>
+      <div class="auth-field">
+        <label class="auth-label" for="auth-email">Email</label>
+        <input class="auth-input" id="auth-email" type="email" placeholder="you@corti.ai" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="auth-password">Password</label>
+        <input class="auth-input" id="auth-password" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="auth-btn" id="auth-submit">Sign in</button>
+      <div class="auth-error" id="auth-error"></div>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="header-row">
+      <div class="header-left">
+        <h1>Dimitar – Growth Plan H1 2026</h1>
+        <div class="meta">Staff Product Designer (L6) &nbsp;·&nbsp; Mar 11 – Sep 11, 2026 &nbsp;·&nbsp; Review: end of August 2026</div>
+      </div>
+      <div class="header-actions">
+        <div class="save-status">
+          <span class="save-dot"></span>
+          <span id="save-time">Loading…</span>
+        </div>
+<button class="btn-ghost" id="export-btn">↑ Export</button>
+        <button class="btn-ghost" id="import-btn">↓ Import</button>
+        <button class="btn-ghost" id="logout-btn">Sign out</button>
+        <input type="file" id="import-input" accept=".json">
+      </div>
+    </div>
+
+    <div class="timeline-section">
+      <div class="timeline-labels" id="tlabels"></div>
+      <div class="timeline-bar" id="tbar">
+        <div class="timeline-fill" id="tfill"></div>
+        <div class="timeline-today" id="ttoday"></div>
+      </div>
+    </div>
+
+    <div class="plan-stats" id="plan-stats"></div>
+  </header>
+
+  <main class="main" id="main-cards"></main>
+  <div class="footer">
+    <button class="btn-secondary" id="export-btn-2">Export JSON backup</button>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ── Error visibility (catch any init failures early) ────
+    window.onerror = function(msg, src, line, col, err) {
+      var box = document.getElementById('js-error-box');
+      if (!box) { box = document.createElement('div'); box.id = 'js-error-box';
+        box.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:12px 20px;background:#c0392b;color:#fff;font:13px/1.5 monospace;z-index:9999';
+        document.body.appendChild(box); }
+      box.textContent = 'JS Error: ' + msg + ' (line ' + line + ')';
+      return false;
+    };
+
+    // ── Date helpers (defined first so they can be used below) ──
+    function localDate(str) {
+      var parts = str.split('-');
+      return new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    }
+    function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
+
+    // ── Config ──────────────────────────────────────────────
+    var START  = localDate('2026-03-11');
+    var REVIEW = localDate('2026-08-31');
+    var END    = localDate('2026-09-11');
+    var TODAY  = (function() { var d = new Date(); d.setHours(0,0,0,0); return d; })();
+
+    const M1 = { period: '1mo', due: '2026-04-11' };
+    const M3 = { period: '3mo', due: '2026-06-11' };
+    const M6 = { period: '6mo', due: '2026-09-11' };
+
+    const AREAS = [
+      {
+        id: 1,
+        title: 'Execution Velocity & Experimentation',
+        goal: 'Move faster from idea → prototype → validation to reduce product risk earlier.',
+        ratingQ: 'How consistently are you prototyping and validating within 1–2 days of identifying a problem?',
+        ratingLabels: ['Not yet', 'Occasionally', 'Regularly', 'Consistently', 'Systematically'],
+        milestones: [
+          { ...M1, text: 'Increased prototype velocity and earlier engineering engagement' },
+          { ...M3, text: 'Faster product decisions and fewer late-stage design reversals' },
+          { ...M6, text: 'Clear reduction of product risk through earlier validation' }
+        ],
+        behaviors: [
+          { type: 'Key Behavior', text: 'Broader exploration of possible solutions (competitors, patterns, data, internal feedback)' },
+          { type: 'Key Behavior', text: 'Rapid prototyping alongside discovery' },
+          { type: 'Key Behavior', text: 'Multiple iterations before committing to a solution' },
+          { type: 'Key Behavior', text: 'Increased use of agentic tooling to accelerate exploration' },
+          { type: 'Working Practice', text: 'Define a hypothesis before deep design work' },
+          { type: 'Working Practice', text: 'Create testable prototypes within 1–2 days' },
+          { type: 'Working Practice', text: 'Run internal + external validation loops' },
+          { type: 'Working Practice', text: 'Capture key learnings from experiments' },
+        ]
+      },
+      {
+        id: 2,
+        title: 'Direct Customer & User Engagement',
+        goal: 'Embed user validation into the design process.',
+        ratingQ: 'How embedded is direct user research in your active design work? (target: ≥2 external interviews/mo)',
+        ratingLabels: ['Ad hoc', 'Infrequent', 'Finding rhythm', 'Consistent', 'Fully embedded'],
+        milestones: [
+          { ...M1, text: 'Early design assumptions informed by user feedback' },
+          { ...M3, text: 'Clear connection between user insight and shipped improvements' },
+          { ...M6, text: 'Stronger credibility in product direction discussions' }
+        ],
+        behaviors: [
+          { type: 'Working Practice', text: 'Clearly define the hypothesis being tested' },
+          { type: 'Working Practice', text: 'Minimum 2 external user interviews per month' },
+          { type: 'Working Practice', text: '1 internal validation session per major initiative' },
+          { type: 'Working Practice', text: 'Expand customer exposure beyond a single partner' },
+          { type: 'Working Practice', text: 'Maintain an Assistant Insights Log' },
+          { type: 'Working Practice', text: 'Share insights during product refinement discussions' },
+        ]
+      },
+      {
+        id: 3,
+        title: 'Product Analytics',
+        goal: 'Use analytics to identify behavior gaps and guide product improvements.',
+        ratingQ: 'How proactively are you using product data to prioritize and inform design decisions?',
+        ratingLabels: ['Not yet', 'Aware/passive', 'Monthly check-ins', 'Proactive', 'Data-first'],
+        milestones: [
+          { ...M3, text: 'Design discussions regularly referencing product usage patterns' },
+          { ...M6, text: 'Analytics helping identify the most impactful improvement areas' }
+        ],
+        behaviors: [
+          { type: 'Working Practice', text: 'Partner with PM + Eng to define 3–5 key Assistant usage metrics' },
+          { type: 'Working Practice', text: 'Review analytics monthly' },
+          { type: 'Working Practice', text: 'Bring one data-informed insight to roadmap discussions' },
+          { type: 'Working Practice', text: 'Use data to prioritize experiments and design work' },
+        ]
+      },
+      {
+        id: 4,
+        title: 'Openness to Feedback & Strategic Challenge',
+        goal: 'Strengthen feedback maturity and maintain consistent openness to challenge.',
+        ratingQ: 'How consistently are you demonstrating feedback maturity — listening first, clarifying before defending?',
+        ratingLabels: ['Defensive', 'Improving', 'Receptive', 'Consistently open', 'Model coachability'],
+        milestones: [
+          { ...M3, text: 'Noticeable shift in tone during challenging discussions' },
+          { ...M6, text: 'Seen as highly coachable and trusted in complex product conversations' }
+        ],
+        behaviors: [
+          { type: 'Key Behavior', text: 'Assume positive intent behind feedback' },
+          { type: 'Key Behavior', text: 'Ask clarifying questions before defending solutions' },
+          { type: 'Key Behavior', text: 'Separate critique of ideas from critique of individuals' },
+          { type: 'Key Behavior', text: 'Use challenge to refine thinking' },
+          { type: 'Working Practice', text: 'Reflect back feedback before responding' },
+          { type: 'Working Practice', text: 'Periodically revisit feedback themes to ensure sustained improvement' },
+        ]
+      },
+      {
+        id: 5,
+        title: 'Staff-Level Direction Setting',
+        goal: 'Move beyond executing direction to helping shape product direction for Embedded Assistant.',
+        ratingQ: 'How proactively are you shaping product direction — bringing structured initiative proposals beyond assigned work?',
+        ratingLabels: ['Executing direction', 'Occasional input', 'Structured input', 'Clear proposals', 'Recognized setter'],
+        milestones: [
+          { ...M3, text: 'Brings structured direction proposals to product discussions' },
+          { ...M6, text: 'Recognized as helping shape Embedded Assistant experience direction' }
+        ],
+        behaviors: [
+          { type: 'Working Practice', text: 'Propose 1 Assistant Experience Improvement Initiative per quarter' },
+          { type: 'Working Practice', text: 'Outline each initiative: problem framing, business relevance, hypothesis, validation approach, target user' },
+        ]
+      }
+    ];
+
+    const STORAGE_KEY = 'growth_plan_h1_2026_v2';
+
+    // ── Supabase ────────────────────────────────────────────
+    const SUPA_URL = 'https://dpyxdmmbmjpiwbguhbfi.supabase.co';
+    const SUPA_KEY = 'sb_publishable_AV7DYOn9av_oxGm7xRCo-Q_eTxw1WPA';
+    const db = window.supabase.createClient(SUPA_URL, SUPA_KEY, {
+      auth: {
+        detectSessionInUrl: false,
+        persistSession: true,
+        autoRefreshToken: true,
+        lock: async (name, acquireTimeout, fn) => fn()
+      }
+    });
+
+    // ── Data ────────────────────────────────────────────────
+    function defaultAreaState(area) {
+      return {
+        rating: 0,
+        milestones: area.milestones.map(() => ({ done: false, rating: 0, entries: [] })),
+        behaviors: area.behaviors.map(() => ({ checked: false, entries: [] })),
+        notes: ''
+      };
+    }
+
+    function defaultData() {
+      return {
+        version: 2, lastSaved: null,
+        areas: Object.fromEntries(AREAS.map(a => [a.id, defaultAreaState(a)]))
+      };
+    }
+
+    function migrateData(d) {
+      AREAS.forEach(a => {
+        if (!d.areas[a.id]) { d.areas[a.id] = defaultAreaState(a); return; }
+        const s = d.areas[a.id];
+        if (!s.behaviors || s.behaviors.length !== a.behaviors.length) {
+          s.behaviors = a.behaviors.map((_, i) =>
+            (s.behaviors && s.behaviors[i]) ? s.behaviors[i] : { checked: false, entries: [] }
+          );
+        }
+        if (!s.milestones || s.milestones.length !== a.milestones.length) {
+          s.milestones = a.milestones.map((_, i) =>
+            (s.milestones && s.milestones[i] != null)
+              ? (typeof s.milestones[i] === 'boolean' ? { done: s.milestones[i], rating: 0, entries: [] } : s.milestones[i])
+              : { done: false, rating: 0, entries: [] }
+          );
+        } else {
+          s.milestones = s.milestones.map(m =>
+            typeof m === 'boolean' ? { done: m, rating: 0, entries: [] } : { entries: [], ...m }
+          );
+        }
+      });
+      return d;
+    }
+
+    let state = defaultData();
+    let saveTimer = null;
+
+    function saveData() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(async () => {
+        state.lastSaved = new Date().toISOString();
+        try {
+          await db.from('tracker_state').upsert({
+            id: 'main',
+            data: state,
+            updated_at: new Date().toISOString()
+          });
+        } catch(e) {}
+        updateSaveStatus();
+      }, 400);
+    }
+
+    function updateSaveStatus() {
+      const el = document.getElementById('save-time');
+      if (!el) return;
+      if (!state.lastSaved) { el.textContent = 'not saved yet'; return; }
+      const d = new Date(state.lastSaved);
+      el.textContent = `saved ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    // ── Dark mode (removed toggle; keeping hook in case re-added) ──
+
+    // ── Timeline ────────────────────────────────────────────
+    function pct(d) {
+      return Math.min(100, Math.max(0, (daysBetween(START, d) / daysBetween(START, END)) * 100));
+    }
+
+    function renderTimeline() {
+      const tp = pct(TODAY);
+      document.getElementById('tfill').style.width = tp + '%';
+      document.getElementById('ttoday').style.left = tp + '%';
+
+      const D1MO = localDate('2026-04-11');
+      const D3MO = localDate('2026-06-11');
+
+      // top labels
+      const tlabels = document.getElementById('tlabels');
+      [
+        { d: START, label: 'Mar 11' },
+        { d: D1MO,  label: 'Apr 11' },
+        { d: D3MO,  label: 'Jun 11' },
+        { d: END,   label: 'Sep 11' },
+      ].forEach(({ d, label }) => {
+        const sp = document.createElement('span');
+        sp.textContent = label;
+        sp.style.left = pct(d) + '%';
+        tlabels.appendChild(sp);
+      });
+
+      const bar = document.getElementById('tbar');
+      [
+        { d: D1MO, label: '1mo', cls: TODAY >= D1MO ? 'passed' : '' },
+        { d: D3MO, label: '3mo', cls: TODAY >= D3MO ? 'passed' : '' },
+        { d: END,  label: 'review / 6mo', cls: 'review-pin' },
+      ].forEach(pin => {
+        const el = document.createElement('div');
+        el.className = `t-pin ${pin.cls}`;
+        el.style.left = pct(pin.d) + '%';
+        const lbl = document.createElement('div');
+        lbl.className = 't-pin-lbl';
+        lbl.textContent = pin.label;
+        el.appendChild(lbl);
+        bar.appendChild(el);
+      });
+
+      const elapsed  = Math.max(0, daysBetween(START, TODAY));
+      const to3mo    = Math.max(0, daysBetween(TODAY, D3MO));
+      const toEnd    = Math.max(0, daysBetween(TODAY, END));
+      const pctDone  = Math.round(tp);
+
+      document.getElementById('plan-stats').innerHTML = `
+        <span><span class="stat-val mono">${elapsed}</span> days elapsed</span>
+        <span class="sep">·</span>
+        <span><span class="stat-val mono">${to3mo}</span> to 3mo mark</span>
+        <span class="sep">·</span>
+        <span><span class="stat-val mono">${toEnd}</span> to plan end</span>
+        <span class="sep">·</span>
+        <span><span class="stat-val mono">${pctDone}%</span> through</span>
+      `;
+    }
+
+    // ── Helpers ─────────────────────────────────────────────
+    function todayStr() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    function fmtDate(str) {
+      if (!str) return '';
+      const [y, m, d] = str.split('-').map(Number);
+      return new Date(y, m-1, d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    }
+    function esc(s) {
+      return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function autoResize(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
+    function isOverdue(dueStr) { return TODAY > localDate(dueStr); }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    // ── Render ──────────────────────────────────────────────
+    function ratingDotsHtml(rating) {
+      return Array.from({length:5}, (_,i) => `<span class="rb ${i<rating?'on':''}"></span>`).join('');
+    }
+
+    function milestoneChipsHtml(area) {
+      return area.milestones.map((m, i) => {
+        const ms = state.areas[area.id].milestones[i];
+        const done = ms.done;
+        const od = !done && isOverdue(m.due);
+        return `<span class="ms-chip ${done?'done':od?'overdue':''}">${m.period}</span>`;
+      }).join('');
+    }
+
+    function behaviorEntriesHtml(areaId, bIdx, entries) {
+      return entries.map(e => `
+        <div class="bv-ev" id="bve-${e.id}">
+          <span class="bv-ev-date">${fmtDate(e.date)}</span>
+          <textarea class="bv-ev-text" rows="1"
+            oninput="autoResize(this);updateBvEntry(${areaId},${bIdx},'${e.id}',this.value)"
+          >${esc(e.text)}</textarea>
+          <button class="bv-ev-del" onclick="deleteBvEntry(${areaId},${bIdx},'${e.id}')" title="Remove">×</button>
+        </div>`).join('');
+    }
+
+    function renderBehaviorGroups(area) {
+      const s = state.areas[area.id];
+      const types = [...new Set(area.behaviors.map(b => b.type))];
+      return types.map(type => {
+        const items = area.behaviors.map((b, i) => ({b, i})).filter(({b}) => b.type === type);
+        const rows = items.map(({b, i}) => {
+          const bs = s.behaviors[i];
+          return `
+            <div class="bv-item ${bs.checked ? 'checked' : ''}" id="bvi-${area.id}-${i}">
+              <div class="bv-row" onclick="toggleBehavior(${area.id},${i})">
+                <div class="bv-chk">${bs.checked ? '✓' : ''}</div>
+                <span class="bv-label">${b.text}</span>
+              </div>
+              <div class="bv-body" id="bvbody-${area.id}-${i}">
+                <div class="bv-entries" id="bvent-${area.id}-${i}">${behaviorEntriesHtml(area.id, i, bs.entries)}</div>
+                <button class="bv-add" onclick="addBvEntry(${area.id},${i})">+ example</button>
+              </div>
+            </div>`;
+        }).join('');
+        return `<div class="sl">${type}</div><div class="bv-group">${rows}</div>`;
+      }).join('');
+    }
+
+    function renderCard(area) {
+      const s = state.areas[area.id];
+      const ratingHtml = area.ratingLabels.map((lbl, i) => {
+        const v = i + 1;
+        return `<div class="r-opt ${s.rating===v?'sel':''}" id="ropt-${area.id}-${v}" onclick="setRating(${area.id},${v})">
+          <div class="r-num">${v}</div><div class="r-lbl">${lbl}</div>
+        </div>`;
+      }).join('');
+
+      const msRatingLabels = ['Not yet', 'Early signs', 'In progress', 'Mostly there', 'Achieved'];
+      const msHtml = area.milestones.map((m, i) => {
+        const ms = s.milestones[i];
+        const done = ms.done;
+        const od = !done && isOverdue(m.due);
+        const msRatingHtml = msRatingLabels.map((lbl, ri) => {
+          const v = ri + 1;
+          return `<div class="ms-r-opt ${ms.rating===v?'sel':''}" id="msropt-${area.id}-${i}-${v}" onclick="event.stopPropagation();setMsRating(${area.id},${i},${v})">
+            <div class="ms-r-num">${v}</div><div class="ms-r-lbl">${lbl}</div>
+          </div>`;
+        }).join('');
+        const msEntriesHtml = ms.entries.map(e => `
+          <div class="bv-ev" id="mseve-${e.id}">
+            <span class="bv-ev-date">${fmtDate(e.date)}</span>
+            <textarea class="bv-ev-text" rows="1"
+              oninput="autoResize(this);updateMsEntry(${area.id},${i},'${e.id}',this.value)"
+            >${esc(e.text)}</textarea>
+            <button class="bv-ev-del" onclick="deleteMsEntry(${area.id},${i},'${e.id}')" title="Remove">×</button>
+          </div>`).join('');
+        const showMsBody = ms.entries.length > 0;
+        return `<div class="ms-item ${done?'done':''} ${od?'overdue':''}" id="ms-${area.id}-${i}">
+          <div class="ms-row" onclick="toggleMs(${area.id},${i})">
+            <div class="ms-check">${done?'✓':''}</div>
+            <span class="ms-period">${m.period}</span>
+            <span class="ms-text">${m.text}</span>
+          </div>
+          <div class="ms-rating">${msRatingHtml}</div>
+          <div class="bv-body" id="msbody-${area.id}-${i}" style="${showMsBody?'':'display:none'}">
+            <div class="bv-entries" id="msent-${area.id}-${i}">${msEntriesHtml}</div>
+            <button class="bv-add" onclick="addMsEntry(${area.id},${i})">+ example</button>
+          </div>
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="card ${area.id === 1 ? 'open' : ''}" id="area-${area.id}">
+          <div class="card-hd" onclick="toggleCard(${area.id})">
+            <div class="area-badge">${area.id}</div>
+            <div class="card-title-col">
+              <div class="card-title">${area.title}</div>
+              <div class="card-goal-text">${area.goal}</div>
+            </div>
+            <div class="card-right">
+              <div class="r-badge" id="rbadge-${area.id}">${ratingDotsHtml(s.rating)}</div>
+              <div class="ms-chips" id="mschips-${area.id}">${milestoneChipsHtml(area)}</div>
+            </div>
+            <span class="chevron">⌄</span>
+          </div>
+          <div class="card-bd">
+            <div class="divider"></div>
+${renderBehaviorGroups(area)}
+            <div class="sl">Milestone signals</div>
+            <div class="ms-list">${msHtml}</div>
+            <div class="sl">1:1 notes &amp; manager feedback</div>
+            <textarea class="notes-ta"
+              placeholder="Notes from 1:1s, manager feedback, context to remember…"
+              oninput="updateNotes(${area.id},this.value)"
+            >${esc(s.notes)}</textarea>
+          </div>
+        </div>`;
+    }
+
+    function renderCards() {
+      document.getElementById('main-cards').innerHTML = AREAS.map(renderCard).join('');
+      requestAnimationFrame(() => document.querySelectorAll('.bv-ev-text').forEach(autoResize));
+    }
+
+    // ── Interactions ────────────────────────────────────────
+    function toggleCard(id) { document.getElementById(`area-${id}`).classList.toggle('open'); }
+
+    function setRating(areaId, val) {
+      val = state.areas[areaId].rating === val ? 0 : val;
+      state.areas[areaId].rating = val;
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById(`ropt-${areaId}-${i}`);
+        if (el) el.classList.toggle('sel', i === val);
+      }
+      const badge = document.getElementById(`rbadge-${areaId}`);
+      if (badge) badge.innerHTML = ratingDotsHtml(val);
+      saveData();
+    }
+
+    function toggleBehavior(areaId, bIdx) {
+      const bs = state.areas[areaId].behaviors[bIdx];
+      bs.checked = !bs.checked;
+      const item = document.getElementById(`bvi-${areaId}-${bIdx}`);
+      if (item) {
+        item.classList.toggle('checked', bs.checked);
+        item.querySelector('.bv-chk').textContent = bs.checked ? '✓' : '';
+      }
+      saveData();
+    }
+
+    function addBvEntry(areaId, bIdx) {
+      const id = 'e' + Date.now();
+      state.areas[areaId].behaviors[bIdx].entries.push({ id, date: todayStr(), text: '' });
+      const list = document.getElementById(`bvent-${areaId}-${bIdx}`);
+      const div = document.createElement('div');
+      div.className = 'bv-ev'; div.id = `bve-${id}`;
+      div.innerHTML = `
+        <span class="bv-ev-date">${fmtDate(todayStr())}</span>
+        <textarea class="bv-ev-text" rows="1"
+          oninput="autoResize(this);updateBvEntry(${areaId},${bIdx},'${id}',this.value)"
+          placeholder="Describe a specific example…"></textarea>
+        <button class="bv-ev-del" onclick="deleteBvEntry(${areaId},${bIdx},'${id}')" title="Remove">×</button>`;
+      list.appendChild(div);
+      div.querySelector('textarea').focus();
+      saveData();
+    }
+
+    function updateBvEntry(areaId, bIdx, entryId, text) {
+      const e = state.areas[areaId].behaviors[bIdx].entries.find(e => e.id === entryId);
+      if (e) e.text = text;
+      saveData();
+    }
+
+    function deleteBvEntry(areaId, bIdx, entryId) {
+      const bs = state.areas[areaId].behaviors[bIdx];
+      bs.entries = bs.entries.filter(e => e.id !== entryId);
+      const el = document.getElementById(`bve-${entryId}`);
+      if (el) el.remove();
+      saveData();
+    }
+
+    function toggleMs(areaId, idx) {
+      const s = state.areas[areaId];
+      s.milestones[idx].done = !s.milestones[idx].done;
+      const done = s.milestones[idx].done;
+      const el = document.getElementById(`ms-${areaId}-${idx}`);
+      if (el) {
+        el.classList.toggle('done', done);
+        el.querySelector('.ms-check').textContent = done ? '✓' : '';
+        const area = AREAS.find(a => a.id === areaId);
+        el.classList.toggle('overdue', !done && isOverdue(area.milestones[idx].due));
+      }
+      const chips = document.getElementById(`mschips-${areaId}`);
+      if (chips) chips.innerHTML = milestoneChipsHtml(AREAS.find(a => a.id === areaId));
+      saveData();
+    }
+
+    function setMsRating(areaId, idx, val) {
+      val = state.areas[areaId].milestones[idx].rating === val ? 0 : val;
+      state.areas[areaId].milestones[idx].rating = val;
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById(`msropt-${areaId}-${idx}-${i}`);
+        if (el) el.classList.toggle('sel', i === val);
+      }
+      const body = document.getElementById(`msbody-${areaId}-${idx}`);
+      if (body && val > 0) body.style.display = '';
+      else if (body && val === 0 && state.areas[areaId].milestones[idx].entries.length === 0) body.style.display = 'none';
+      saveData();
+    }
+
+    function addMsEntry(areaId, idx) {
+      const id = 'me' + Date.now();
+      state.areas[areaId].milestones[idx].entries.push({ id, date: todayStr(), text: '' });
+      const body = document.getElementById(`msbody-${areaId}-${idx}`);
+      if (body) body.style.display = '';
+      const list = document.getElementById(`msent-${areaId}-${idx}`);
+      const div = document.createElement('div');
+      div.className = 'bv-ev'; div.id = `mseve-${id}`;
+      div.innerHTML = `
+        <span class="bv-ev-date">${fmtDate(todayStr())}</span>
+        <textarea class="bv-ev-text" rows="1"
+          oninput="autoResize(this);updateMsEntry(${areaId},${idx},'${id}',this.value)"
+          placeholder="Describe a specific example…"></textarea>
+        <button class="bv-ev-del" onclick="deleteMsEntry(${areaId},${idx},'${id}')" title="Remove">×</button>`;
+      list.appendChild(div);
+      div.querySelector('textarea').focus();
+      saveData();
+    }
+
+    function updateMsEntry(areaId, idx, entryId, text) {
+      const e = state.areas[areaId].milestones[idx].entries.find(e => e.id === entryId);
+      if (e) e.text = text;
+      saveData();
+    }
+
+    function deleteMsEntry(areaId, idx, entryId) {
+      const ms = state.areas[areaId].milestones[idx];
+      ms.entries = ms.entries.filter(e => e.id !== entryId);
+      const el = document.getElementById(`mseve-${entryId}`);
+      if (el) el.remove();
+      if (ms.entries.length === 0 && ms.rating === 0) {
+        const body = document.getElementById(`msbody-${areaId}-${idx}`);
+        if (body) body.style.display = 'none';
+      }
+      saveData();
+    }
+
+    function updateNotes(areaId, text) { state.areas[areaId].notes = text; saveData(); }
+
+    // ── Export / Import ─────────────────────────────────────
+    function exportData() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `growth-plan-backup-${todayStr()}.json`;
+      a.click(); URL.revokeObjectURL(url);
+      showToast('Backup exported');
+    }
+
+    function importData(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!data.areas) throw new Error('Invalid');
+          state = data; saveData(); renderCards();
+          showToast('Data imported successfully');
+        } catch(e) { alert('Could not read this file. Please import a valid growth plan backup (.json).'); }
+      };
+      reader.readAsText(file);
+    }
+
+    // ── Auth ────────────────────────────────────────────────
+    async function signIn() {
+      const email    = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const errEl    = document.getElementById('auth-error');
+      const btn      = document.getElementById('auth-submit');
+      errEl.textContent = '';
+      btn.disabled = true; btn.textContent = 'Signing in…';
+      const { error } = await db.auth.signInWithPassword({ email, password });
+      if (error) {
+        errEl.textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Sign in';
+      }
+    }
+
+    async function signOut() {
+      await db.auth.signOut();
+      appReady = false;
+      document.getElementById('auth-overlay').classList.remove('hidden');
+      document.getElementById('save-time').textContent = 'Loading…';
+    }
+
+    let appReady = false;
+
+    function showAppError(msg) {
+      document.getElementById('save-time').textContent = '⚠ ' + msg;
+      console.error('[tracker]', msg);
+    }
+
+    async function loadAndRender() {
+      if (appReady) return;
+      appReady = true;
+
+      document.getElementById('save-time').textContent = 'Loading…';
+
+      try {
+        const { data: row, error } = await db.from('tracker_state').select('data').eq('id', 'main').maybeSingle();
+        if (error) throw error;
+
+        if (row && row.data) {
+          state = migrateData(row.data);
+        } else {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            state = migrateData(JSON.parse(raw));
+            const { error: upErr } = await db.from('tracker_state').upsert({ id: 'main', data: state, updated_at: new Date().toISOString() });
+            if (upErr) throw upErr;
+            showToast('Local data migrated to cloud ✓');
+          } else {
+            state = defaultData();
+          }
+        }
+      } catch(e) {
+        showAppError(e.message || 'Could not load data');
+        state = defaultData();
+      }
+
+      document.getElementById('tlabels').innerHTML = '';
+      document.getElementById('tbar').querySelectorAll('.t-pin').forEach(el => el.remove());
+
+      renderTimeline();
+      renderCards();
+      updateSaveStatus();
+    }
+
+    // ── Init ────────────────────────────────────────────────
+    document.getElementById('auth-submit').addEventListener('click', signIn);
+    document.getElementById('auth-password').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') signIn();
+    });
+    document.getElementById('logout-btn').addEventListener('click', signOut);
+    document.getElementById('export-btn').addEventListener('click', exportData);
+    document.getElementById('export-btn-2').addEventListener('click', exportData);
+    document.getElementById('import-btn').addEventListener('click', function() { document.getElementById('import-input').click(); });
+    document.getElementById('import-input').addEventListener('change', function(e) {
+      if (e.target.files[0]) { importData(e.target.files[0]); e.target.value = ''; }
+    });
+
+    // On load: check for existing session first
+    (async function init() {
+      try {
+        const { data: { session } } = await db.auth.getSession();
+        if (session) {
+          document.getElementById('auth-overlay').classList.add('hidden');
+          await loadAndRender();
+        }
+        // else: auth overlay stays visible, user must sign in
+      } catch(e) {
+        showAppError('Auth error: ' + (e.message || e));
+      }
+    })();
+
+    // Handle fresh sign-ins
+    db.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        document.getElementById('auth-overlay').classList.add('hidden');
+        await loadAndRender();
+      } else if (event === 'SIGNED_OUT') {
+        document.getElementById('auth-overlay').classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
